@@ -1,0 +1,75 @@
+/* Animation keyframes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Custom card animation */
+.animate-card {
+    animation: fadeInUp 0.5s ease-in-out;
+}
+
+/* Custom button animation */
+.animate-button {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.animate-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Custom button styles */
+.btn-primary {
+    background-color: #3498db;
+    border: none;
+}
+
+.btn-success {
+    background-color: #2ecc71;
+    border: none;
+}
+
+.btn-warning {
+    background-color: #f1c40f;
+    border: none;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    border: none;
+}
+
+/* Custom card styles */
+.card {
+    border: none;
+    border-radius: 12px;
+    transition: box-shadow 0.3s;
+    overflow: hidden;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+    position: relative;
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+}
+
+.card-title {
+    font-size: 1.25rem;
+    color: #2c3e50;
+}
+
+.card-text {
+    font-size: 1rem;
+    color: #34495e;
+}

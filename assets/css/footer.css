@@ -1,0 +1,35 @@
+footer {
+    background-color: #000000;
+    color: #ffd700;
+    text-align: center;
+    padding: 20px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.footer-link {
+    color: #ffd700;
+    text-decoration: none;
+    margin: 0 10px;
+    transition: color 0.3s;
+}
+
+.footer-link:hover {
+    color: #87ceeb;
+}
+
+footer p {
+    margin: 0;
+}
+
+footer a {
+    color: #ffd700;
+    transition: color 0.3s;
+}
+
+footer a:hover {
+    text-decoration: none;
+    color: #87ceeb;
+}
