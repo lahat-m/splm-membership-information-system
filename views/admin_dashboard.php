@@ -24,8 +24,9 @@ $result = $conn->query($sql);
 <body>
 <?php include '../include/header.php' ?>
     <div class="container mt-5">
-        <div class="container">
-            <a href="update_profile.php">Update Profile</a>
+        <div class="container profile">
+            <a class="profile" href="update_profile.php">Update Profile</a>
+            <hr>
         </div>
         <h2>Applications</h2>
         <div class="row g-4 mb-6">
@@ -77,7 +78,6 @@ $result = $conn->query($sql);
         </div>
     </div>
 
-    <?php include 'footer.php'; ?>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

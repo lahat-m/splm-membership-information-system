@@ -1,18 +1,19 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 .container {
-    /* max-width: 300px; */
     margin: 50px auto;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     background-color: #fff;
-    max-height: 100vh;
-    max-width: 10px;
-
+    max-width: 500px;
 }
 
 h1 {
@@ -39,4 +40,46 @@ h1 {
 
 .text-danger {
     margin-top: 10px;
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.login-image {
+    max-width: 100%;
+}
+
+.login-form {
+    width: 100%;
+    background-image: url('../assets/images/form-background.jpg');
+    background-size: cover;
+    background-position: center;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-form .form-label,
+.login-form .btn-primary,
+.login-form .text-danger {
+    color: #fff;
+}
+
+.login-form .form-control {
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    color: #000;
+}
+
+.login-form .form-control::placeholder {
+    color: #666;
+}
+
+.login-form .btn-primary {
+    background-color: #007bff;
+    border: none;
 }
