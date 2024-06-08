@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <?php include 'header.php' ?>
+<?php include '../include/header.php' ?>
     <main class="container py-4 mt-5">
         <h1 class="text-center display-4">Welcome to SPLM Membership Portal</h1>
 
@@ -38,7 +38,7 @@
             });
         });
     </script>
- <?php include 'footer.php' ?>
+ <?php include '../include/footer.php' ?>
 </body>
 
 </html>

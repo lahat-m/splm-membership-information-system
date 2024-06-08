@@ -28,9 +28,8 @@ if (isset($_SESSION['user_type'])) {
 </head>
 
 <body>
-<?php
-    include 'header.php'
-    ?>
+<?php include '../include/header.php' ?>
+
     <div class="container">
         <h1>Sign Up</h1>
         <form action="../core/register.php" method="post">
@@ -102,8 +101,6 @@ if (isset($_SESSION['user_type'])) {
         </form>
     </div>
 
-    <?php
-    include 'footer.php'
-    ?>
+    <?php include '../include/footer.php' ?>
 </body>
 </html>

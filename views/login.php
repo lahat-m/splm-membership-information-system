@@ -22,9 +22,7 @@ if (isset($_SESSION['login_error'])) {
 </head>
 
 <body>
-<?php
-    include 'header.php'
-?>
+<?php include '../include/header.php' ?>
 
     <div class="container mt-5">
         <h1>Login</h1>
@@ -50,8 +48,6 @@ if (isset($_SESSION['login_error'])) {
     </div>
 
 </body>
-<?php
-    include 'footer.php'
-    ?>
+<?php include '../include/footer.php' ?>
 
 </html>

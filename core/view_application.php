@@ -1,31 +1,43 @@
 <?php
-session_start();
 include '../config/db_connect.php';
 
-// Assuming the applicant's ID is stored in the session
-$user_type = $_SESSION['user_type'] ?? null;
-$user_id = $_SESSION['user_id'] ?? null;
-$email = $_SESSION['email'] ?? null;
-$username = $_SESSION['username'] ?? null;
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_application'])) {
+    $id_application = $_POST['id_application'];
 
-if (!$user_type || !$user_id) {
-    echo "No applicant ID found.";
-    exit();
+    $sql = "SELECT * FROM applications WHERE id_application = ?";
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param("i", $id_application);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $application_data = $result->fetch_assoc();
+        $stmt->close();
+    }
+
+    if ($application_data) {
+        echo '<div class="container mb-5">';
+        echo '<div class="text-center mb-5">';
+        echo '<img src="../assets/images/logo.jpg" alt="Logo" class="img-fluid" style="max-width: 150px;">';
+        echo '</div>';
+        echo '<h1 class="text-center">Applicant Form</h1>';
+        echo '<div class="table-responsive">';
+        echo '<table class="table table-bordered table-striped">';
+        echo '<thead>';
+        echo '<tr><th colspan="2" class="section-title">Personal Details</th></tr>';
+        echo '</thead>';
+        echo '<tbody>';
+        foreach ($application_data as $key => $value) {
+            if (!in_array($key, ['id_application', 'id_applicant', 'id_admin'])) {
+                echo '<tr><td>' . ucwords(str_replace('_', ' ', $key)) . '</td><td>' . htmlspecialchars($value) . '</td></tr>';
+            }
+        }
+        echo '</tbody>';
+        echo '</table>';
+        echo '</div>';
+        echo '</div>';
+    } else {
+        echo '<p class="no-data">No application data found.</p>';
+    }
+
+    $conn->close();
 }
-
-// Fetch application details
-$query = "SELECT * FROM applications WHERE id_application = ?";
-$stmt = $conn->prepare($query);
-if (!$stmt) {
-    echo "Failed to prepare statement: " . $conn->error;
-    exit();
-}
-
-$stmt->bind_param('i', $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$id_application = $result->fetch_assoc();
-
-$stmt->close();
-$conn->close();
 ?>

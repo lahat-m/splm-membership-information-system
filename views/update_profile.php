@@ -1,46 +1,45 @@
 <?php
-// Start session
-session_start();
-
-// Include database connection
-include '../config//db_connect.php';
+include '../config/db_connect.php';
+// Ensure session variables are set
+include '../include/session_check.php';
 
 
-// Check if user is not logged in
-if (!isset($_SESSION['user_id'])) {
-    // Redirect to login page
-    header("Location: login.php");
-    exit;
-}
-// Get the session user ID and user type
-$user_id = $_SESSION['user_id'];
-$user_type = $_SESSION['user_type'];
+// Get session variables
+include '../include/admin_session.php';
+include '../include/admin_session.php';
 
-// Initialize variables to store user details
-$user_details = array();
-
-// Determine which table to query based on user type
+// Determine the table name based on user type
+$table_name = '';
 if ($user_type === 'Applicant') {
     $table_name = 'Applicants';
 } elseif ($user_type === 'Admin') {
     $table_name = 'Admins';
+} else {
+    // Handle unexpected user type
+    die('Invalid user type.');
 }
 
 // Prepare and execute SQL query to retrieve user details
-$sql = "SELECT * FROM $table_name WHERE {$user_type}_id = ?";
+$sql = "SELECT * FROM $table_name WHERE id_applicant = ?";
 $stmt = $conn->prepare($sql);
+
+$sql = "SELECT * FROM $table_name WHERE id_admin = ?";
+$stmt = $conn->prepare($sql);
+
+if ($stmt === false) {
+    die('Prepare failed: ' . htmlspecialchars($conn->error));
+}
+
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Fetch user details
 if ($result->num_rows > 0) {
     $user_details = $result->fetch_assoc();
 } else {
     // User not found in the respective table
-    // Redirect to login page
     header("Location: login.php");
-    exit;
+    exit();
 }
 
 $stmt->close();
@@ -51,93 +50,50 @@ $conn->close();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Profile </title>
-    <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="assets/css/style.css"> 
-    <link rel="stylesheet" href="assets/css/dashboard.css">
-    <link rel="stylesheet" href="assets/css/profile.css">
+    <title>Update Profile</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/form.css">
 </head>
 <body>
-<header>
-        <div id="home">
-            <img src="assets/img/logo.png" alt="Logo">
-        </div>
-        <button id="darkModeToggle" onclick="toggleDarkMode()">
-         <img class="darkmodeimg" src="assets/img/darkmode.png" alt="">
-        </button>
-        <a href="logout.php" id="logout-link" ><img class="logout" src="assets/img/logout.png" alt="Logout"></a>
-        <h1>NMS</h1>
-    </header>
-    <header class="top-header">
-    <div class="user-details">
-        <p>Welcome: <?php echo $user_details[$user_type . 'first_name'];?>
-        | User ID: <?php echo $user_details[$user_type . 'applicant_id']; ?>
-        | User_type: <?php echo $user_type ; ?></p>
-    </div>
-    <nav>
-                <ul class="nav-links">
-                    <li><a href="dashboard.php">Home</a></li>
-                    <li><a href="profilepage.php">Update Profile</a></li>
-                    <?php if($_SESSION['user_type'] == 'Admin'): ?>
-                    <li><a href="viewrooms.php">Book Room</a></li>
-                    <?php endif; ?></li>
-                    <?php if($_SESSION['user_type'] == 'Applicant'): ?>
-                    <li><a href="housekeepingservicespage.php">Request Housekeeping Service</a></li>
-                    <?php endif; ?></li>
-                </ul>
-    </nav>
-    </header>
-
-    <main>
-        <div class="container">
-            <form action="updateprofile.php" method="POST" enctype="multipart/form-data" autocomplete="off">
-                <label for="user_typefirst_name">First Name:</label>
-                <input type="text" id="user_typefirst_name" name="user_typefirst_name" value="<?php echo $user_details["{$user_type}first_name"]; ?>">
-
-                <label for="user_type_lastname">Last Name:</label>
-                <input type="text" id="user_type_lastname" name="user_type_lastname" value="<?php echo $user_details["{$user_type}_lastname"]; ?>">
-
-                <label for="user_type_email">Email:</label>
-                <input type="email" id="user_type_email" name="user_type_email" value="<?php echo $user_details["{$user_type}_email"]; ?>" readonly>
-
-                <label for="user_type_nationalID">National ID:</label>
-                <input type="text" id="user_type_nationalID" name="user_type_nationalID" value="<?php echo $user_details["{$user_type}_nationalID"]; ?>">
-
-                <label for="user_type_gender">Gender:</label>
-                <select id="user_type_gender" name="user_type_gender">
-                    <option value="male" <?php if ($user_details["{$user_type}_gender"] === 'male') echo 'selected'; ?>>Male</option>
-                    <option value="female" <?php if ($user_details["{$user_type}_gender"] === 'female') echo 'selected'; ?>>Female</option>
-                </select>
-
-                <label for="date_of_birth">Date of Birth:</label>
-                <input type="date" id="date_of_birth" name="date_of_birth" value="<?php echo $user_details["date_of_birth"]; ?>">
-
-                <label for="user_type_phonenumber">Phone Number:</label>
-                <input type="text" id="user_type_phonenumber" name="user_type_phonenumber" value="<?php echo $user_details["{$user_type}_phonenumber"]; ?>">
-                <div class="buttons">
-                    <button type="submit" name="update_profile">Update</button>
-                    <button type="reset">Clear</button>
+    <?php include 'header.php'; ?>
+    <main class="container my-5">
+        <h1 class="text-center mb-4">Update Profile</h1>
+        <form action="../core/update_profile.php" method="post" enctype="multipart/form-data" class="p-4 bg-white rounded shadow">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="first_name" class="form-label">First Name:</label>
+                    <input type="text" id="first_name" name="first_name" value="<?php echo htmlspecialchars($user_details["first_name"]); ?>" class="form-control" required>
                 </div>
-            </form>
-        </div>
+                <div class="col-md-4">
+                    <label for="middle_name" class="form-label">Middle Name:</label>
+                    <input type="text" id="middle_name" name="middle_name" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="surname" class="form-label">Last Name:</label>
+                    <input type="text" id="surname" name="surname" value="<?php echo htmlspecialchars($user_details["username"]); ?>" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user_details["email"]); ?>" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="phone" class="form-label">Phone:</label>
+                    <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($user_details["phone"]); ?>" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="national_id" class="form-label">National ID:</label>
+                    <input type="text" id="national_id" name="national_id" value="<?php echo htmlspecialchars($user_details["national_id"]); ?>" class="form-control" required>
+                </div>
+                <!-- Add other fields as necessary -->
+            </div>
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-primary">Update Profile</button>
+            </div>
+        </form>
     </main>
-    <script>
-    // Check for success message
-    <?php if (isset($_SESSION['success_message'])): ?>
-        alert("<?php echo $_SESSION['success_message']; ?>");
-        <?php unset($_SESSION['success_message']); ?>
-    <?php endif; ?>
-
-    // Check for error messages
-    <?php if (isset($_SESSION['error_messages']) && !empty($_SESSION['error_messages'])): ?>
-        <?php foreach ($_SESSION['error_messages'] as $error): ?>
-            alert("<?php echo $error; ?>");
-        <?php endforeach; ?>
-        <?php unset($_SESSION['error_messages']); ?>
-    <?php endif; ?>
-</script>
-    <script src="assets/js/dashboard.js"></script>
-    <script src="assets/js/script.js"></script> 
+    <?php include 'footer.php'; ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
